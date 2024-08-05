@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "fastreact"
+version = "0.1.0"
+description = "For JudgeYourPrompt project fastapi dependencies"
+authors = ["Kani Kim"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["standard"], version = "^0.112.0"}
+alembic = "^1.13.2"
+sqlalchemy = "^2.0.31"
+mypy = "^1.11.1"
+pydantic-settings = "^2.4.0"
+python-dotenv = "^1.0.1"
+psycopg2-binary = "^2.9.9"
+asyncpg = "^0.29.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+types-passlib = "^1.7.7.20240327"
+pyjwt = "^2.9.0"
+greenlet = "^3.0.3"
+bcrypt = "4.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
