@@ -1,7 +1,9 @@
 import datetime
 from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy.orm import relationship
 
-from session.manager import Base
+from session.manager import Base  # type: ignore
+from .novel import Novel  # type: ignore
 
 
 class User(Base):
@@ -18,3 +20,4 @@ class User(Base):
     phone_number = Column(String(length=255), nullable=True)
     created_at = Column(DateTime(), nullable=False, default=datetime.datetime.now())
     updated_at = Column(DateTime(), nullable=False, default=datetime.datetime.now())
+    novels = relationship("Novel", backref="User")

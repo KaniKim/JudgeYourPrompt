@@ -1,30 +1,33 @@
-from typing import Annotated
+from typing import Annotated, Union
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from starlette import status
-from fastapi.responses import JSONResponse, Response
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi.responses import JSONResponse
 
-from api.v1.dependencies.security import get_current_user
-from factory.user import Factory
-from session.manager import get_db
+from factory.user import UserFactory as Factory
 from schema.security import Token
-from schema.user import User, UserCreate, UserUpdate
+from schema.user import UserCreate, UserInternal, UserReturn, UserUpdate
 from service.token import TokenService
 from service.user import UserService
 
 user_router = APIRouter(prefix="/user", tags=["users"])
 
 
-@user_router.post("/token", status_code=status.HTTP_201_CREATED, response_model=Token)
+@user_router.get("/me", status_code=status.HTTP_200_OK)
+async def get_user_me(token=Depends(Factory().get_current_user)) -> UserReturn:
+    return token
+
+
+@user_router.post("/token", response_model=Token)
 async def login_for_access_token(
-    email: str,
-    password: str,
+    user: UserInternal,
     token_service: TokenService = Depends(Factory().get_token_service),
 ) -> Token | JSONResponse:
-    if await token_service.authenticate_user(email=email, password=password):
-        data = {"email": email}
+    if await token_service.authenticate_user(email=user.email, password=user.password):
+        data = {"email": user.email, "type": "access"}
         access_token = await token_service.create_access_token(data=data)
+        data = {"email": user.email, "type": "refresh"}
         refresh_token = await token_service.create_refresh_token(data=data)
         return Token(
             access_token=access_token, refresh_token=refresh_token, token_type="Bearer"
@@ -37,7 +40,7 @@ async def login_for_access_token(
 
 
 @user_router.get(
-    "/{user_id}", status_code=status.HTTP_200_OK, response_model=User | None
+    "/{user_id}", status_code=status.HTTP_200_OK, response_model=Union[UserReturn, None]
 )
 async def get_user_by_id(
     user_id: int, user_service: UserService = Depends(Factory().get_user_service)
@@ -52,7 +55,9 @@ async def create_user(
     return await user_service.create_user(user)
 
 
-@user_router.put("/{user_id}", status_code=status.HTTP_200_OK, response_model=User)
+@user_router.put(
+    "/{user_id}", status_code=status.HTTP_200_OK, response_model=UserReturn
+)
 async def update_user(
     user_id: int,
     user: UserUpdate,
@@ -63,24 +68,16 @@ async def update_user(
 
 
 @user_router.delete(
-    "/{user_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response
+    "/{user_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=JSONResponse
 )
 async def delete_user(
     user_id: int, user_service: UserService = Depends(Factory().get_user_service)
 ):
     if await user_service.delete_user(user_id=user_id):
         return JSONResponse(
-            content={"message": "User is deleted"},
-            status_code=status.HTTP_204_NO_CONTENT,
+            content="User is deleted",
         )
     return JSONResponse(
-        content={"message": "User is not deleted"},
+        content="User is not deleted",
         status_code=status.HTTP_404_NOT_FOUND,
     )
-
-
-@user_router.get("/me", status_code=status.HTTP_200_OK, response_model=User)
-async def get_user_me(
-    token: Token, current_user: Annotated[User, Depends(get_current_user)]
-):
-    return current_user
