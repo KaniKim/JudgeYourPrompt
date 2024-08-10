@@ -1,6 +1,5 @@
-import contextlib
 from contextvars import ContextVar, Token
-from typing import AsyncGenerator, Union
+from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -8,7 +7,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import Session, declarative_base, sessionmaker
+from sqlalchemy.orm import Session, declarative_base
 from sqlalchemy.sql.expression import Delete, Insert, Update
 
 from session.base_settings import settings
