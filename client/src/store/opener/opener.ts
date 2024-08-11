@@ -1,7 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const openerSlice = createSlice({
-  name: 'opener',
+  name: "opener",
   initialState: {
     value: false,
   },
@@ -16,3 +16,4 @@ export const openerSlice = createSlice({
 });
 
 export const openerActions = openerSlice.actions;
+export default openerSlice.reducer;

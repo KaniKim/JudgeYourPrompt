@@ -1,5 +1,6 @@
 import datetime
 import os
+from fastapi.background import P
 from fastapi.security import OAuth2PasswordBearer
 import jwt
 
@@ -41,7 +42,7 @@ class TokenService(BaseService[UserModel]):
         encoded_jwt = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return encoded_jwt
 
-    async def _verify_password(self, plain_password, hashed_password):
+    def _verify_password(self, plain_password, hashed_password):
         return self._pwd_context.verify(plain_password, hashed_password)
 
     async def authenticate_user(self, email: str, password: str) -> bool:

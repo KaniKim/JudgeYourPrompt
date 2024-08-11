@@ -1,64 +1,57 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/login/login";
+import { AppDispatch } from "../../store/sotre";
+import { useNavigate } from "react-router-dom";
+import { registerActions } from "../../store/login/register";
+import { Button } from "@headlessui/react";
+export const Login = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { register, getValues, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
-const Login = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
-  const [loading, setLoading] = useState<boolean>(false);
-
+  const onSubmit = async () => {
+    const email: string = getValues("email");
+    const password: string = getValues("password");
+    await dispatch(login({ email, password })).unwrap();
+    navigate("/editor");
+  };
   return (
-    <form>
-      <section className="mx-5 my-2 flex h-screen flex-col items-center justify-center space-y-10 md:m-0 md:flex-row md:space-x-16 md:space-y-0">
-        <div className="max-w-sm md:w-1/3">
-          <img
-            src="https://tecdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-            alt="Sample image"
-          />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="max-w">
+        <input
+          {...register("email", { required: true })}
+          className="w-full rounded border border-solid border-gray-300 px-4 py-2 text-sm"
+          type="text"
+          placeholder="Email Address"
+        />
+        <input
+          {...register("password", { required: true })}
+          className="mt-4 w-full rounded border border-solid border-gray-300 px-4 py-2 text-sm"
+          type="password"
+          placeholder="Password"
+        />
+        <div className="mt-4 flex justify-between text-sm font-semibold">
+          <a className="text-blue-600 hover:text-blue-700 hover:underline hover:underline-offset-4">
+            Forgot Password?
+          </a>
+          <Button
+            className="rounded bg-gray-700 px-4 py-2 text-xs uppercase tracking-wider text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white"
+            type="submit"
+          >
+            로그인
+          </Button>
         </div>
-        <div className="max-w-sm md:w-1/3">
-          <input
-            className="w-full rounded border border-solid border-gray-300 px-4 py-2 text-sm"
-            type="text"
-            placeholder="Email Address"
-          />
-          <input
-            className="mt-4 w-full rounded border border-solid border-gray-300 px-4 py-2 text-sm"
-            type="password"
-            placeholder="Password"
-          />
-          <div className="mt-4 flex justify-between text-sm font-semibold">
-            <label className="flex cursor-pointer text-slate-500 hover:text-slate-600">
-              <input className="mr-1" type="checkbox" />
-              <span>Remember Me</span>
-            </label>
-            <a
-              className="text-blue-600 hover:text-blue-700 hover:underline hover:underline-offset-4"
-              href="#"
-            >
-              Forgot Password?
-            </a>
-          </div>
-          <div className="text-center md:text-left">
-            <button
-              className="mt-4 rounded bg-blue-600 px-4 py-2 text-xs uppercase tracking-wider text-white hover:bg-blue-700"
-              type="submit"
-            >
-              Login
-            </button>
-          </div>
-          <div className="mt-4 text-center text-sm font-semibold text-slate-500 md:text-left">
-            Don&apos;t have an account?{" "}
-            <a
-              className="text-red-600 hover:underline hover:underline-offset-4"
-              href="#"
-            >
-              Register
-            </a>
-          </div>
+        <div className="mt-4 text-center text-sm font-semibold text-slate-500 md:text-left">
+          Don&apos;t have an account?{" "}
+          <a
+            className="text-red-600 hover:underline hover:underline-offset-4"
+            onClick={() => dispatch(registerActions.need())}
+          >
+            Register
+          </a>
         </div>
-      </section>
+      </div>
     </form>
   );
 };
-
-export default Login;

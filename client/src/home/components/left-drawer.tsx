@@ -4,11 +4,11 @@ import {
   DialogPanel,
   DialogTitle,
   TransitionChild,
-} from '@headlessui/react';
-import CloseIcon from '@mui/icons-material/Close';
-import { RootState } from '../../store/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { openerActions } from '../../store';
+} from "@headlessui/react";
+import CloseIcon from "@mui/icons-material/Close";
+import { useDispatch, useSelector } from "react-redux";
+import { openerActions } from "../../store/opener/opener";
+import { RootState } from "../../store/sotre";
 
 export const Drawer = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export const Drawer = () => {
     <Dialog
       open={open}
       onClose={() => dispatch(openerActions.close())}
-      className='relative z-10'
+      className="relative z-10"
     >
       <DialogBackdrop
         transition
@@ -36,7 +36,7 @@ export const Drawer = () => {
                   <button
                     type="button"
                     onClick={() => dispatch(openerActions.close())}
-                    className="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                    className="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 pt-80 focus:ring-white"
                   >
                     <span className="absolute -inset-2.5" />
                     <span className="sr-only">Close panel</span>
