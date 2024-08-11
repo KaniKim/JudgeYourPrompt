@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const Login = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -47,7 +47,7 @@ const Login = () => {
             </button>
           </div>
           <div className="mt-4 text-center text-sm font-semibold text-slate-500 md:text-left">
-            Don&apos;t have an account?{' '}
+            Don&apos;t have an account?{" "}
             <a
               className="text-red-600 hover:underline hover:underline-offset-4"
               href="#"
