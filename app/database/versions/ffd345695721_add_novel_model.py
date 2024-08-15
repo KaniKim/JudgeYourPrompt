@@ -10,7 +10,6 @@ import datetime
 from typing import Sequence, Union
 
 from alembic import op
-from sqlalchemy.orm import relationship
 import sqlalchemy as sa
 
 
@@ -35,10 +34,16 @@ def upgrade() -> None:
         sa.Column("title", sa.String(length=255), nullable=False),
         sa.Column("description", sa.Text, nullable=True),
         sa.Column(
-            "created_at", sa.DateTime, nullable=False, default=datetime.datetime.now()
+            "created_at",
+            sa.DateTime,
+            nullable=False,
+            default=datetime.datetime.now(),
         ),
         sa.Column(
-            "updated_at", sa.DateTime, nullable=False, default=datetime.datetime.now()
+            "updated_at",
+            sa.DateTime,
+            nullable=False,
+            default=datetime.datetime.now(),
         ),
     )
     op.add_column("user", sa.Column("novel_id", sa.Integer, nullable=True))

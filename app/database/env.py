@@ -2,10 +2,11 @@ from logging.config import fileConfig
 import os
 
 from dotenv import load_dotenv
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import Connection, engine_from_config, text, pool
 
 from alembic import context
+
+__all__ = ["has_migration_been_applied"]
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -65,6 +66,16 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
+def has_migration_been_applied(connection: Connection, revision_id):
+    # Query the alembic_version table to see if the given revision has been applied
+    result = connection.execute(
+        text(
+            f"SELECT version_num FROM alembic_version WHERE version_num = {revision_id}",
+        )
+    )
+    return result.fetchone() is not None
+
+
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
 
@@ -79,8 +90,13 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
-
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            include_schemas=True,
+            version_table_schema="alembic_version",
+        )
+        connection.execute(text("CREATE SCHEMA IF NOT EXISTS alembic_version"))
         with context.begin_transaction():
             context.run_migrations()
 

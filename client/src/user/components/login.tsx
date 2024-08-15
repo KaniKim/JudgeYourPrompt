@@ -2,19 +2,20 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/login/login";
 import { AppDispatch } from "../../store/sotre";
-import { useNavigate } from "react-router-dom";
-import { registerActions } from "../../store/login/register";
 import { Button } from "@headlessui/react";
+import { registerNeedActions } from "../../store/login/regiterNeed";
+import { useNavigate } from "react-router-dom";
 export const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { register, getValues, handleSubmit } = useForm();
   const navigate = useNavigate();
-
+  
   const onSubmit = async () => {
     const email: string = getValues("email");
     const password: string = getValues("password");
-    await dispatch(login({ email, password })).unwrap();
-    navigate("/editor");
+    await dispatch(login({ email, password })).unwrap().then(() => {
+      navigate("/editor");
+    });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -46,7 +47,7 @@ export const Login = () => {
           Don&apos;t have an account?{" "}
           <a
             className="text-red-600 hover:underline hover:underline-offset-4"
-            onClick={() => dispatch(registerActions.need())}
+            onClick={() => dispatch(registerNeedActions.need())}
           >
             Register
           </a>

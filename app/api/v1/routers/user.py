@@ -1,7 +1,6 @@
 from typing import Annotated, Union
 
 from fastapi import APIRouter, Depends, Header
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from starlette import status
 from fastapi.responses import JSONResponse
 
@@ -48,7 +47,7 @@ async def get_user_by_id(
     return await user_service.get_user(user_id=user_id)
 
 
-@user_router.post("/", status_code=status.HTTP_201_CREATED, response_model=None)
+@user_router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(
     user: UserCreate, user_service: UserService = Depends(Factory().get_user_service)
 ):

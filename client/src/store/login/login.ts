@@ -17,15 +17,18 @@ export const login = createAsyncThunk(
         "Content-Type": "application/json",
       },
     };
-    const response = await axios
+    await axios
       .post("http://localhost:8000/api/v1/user/token", data, config)
+      .then(res => {
+        cookies.set("accessToken", res.data.access_token);
+        cookies.set("refreshToken", res.data.refresh_token);
+      })
       .catch(err => {
         throw err;
       });
 
-    cookies.set("accessToken", response.data.access_token);
-    cookies.set("refreshToken", response.data.refresh_token);
-    return response.data;
+    
+
   },
 );
 

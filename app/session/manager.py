@@ -1,16 +1,19 @@
+import asyncio
+import sys
 from contextvars import ContextVar, Token
 from typing import AsyncGenerator
 
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_scoped_session,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import Session, declarative_base
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 from sqlalchemy.sql.expression import Delete, Insert, Update
 
-from session.base_settings import settings
+from session.base_settings import settings, check_db
 
 session_context: ContextVar[int] = ContextVar("session_context")
 
@@ -27,9 +30,34 @@ def reset_session_context(context: Token) -> None:
     session_context.reset(context)
 
 
+def wait_for_db(db_uri):
+    """checks if database connection is established"""
+
+    _local_engine = create_engine(db_uri)
+
+    _LocalSessionLocal = sessionmaker(
+        autocommit=False, autoflush=False, bind=_local_engine
+    )
+
+    try:
+        # Try to create session to check if DB is awake
+        db_session = _LocalSessionLocal()
+        # try some basic query
+        db_session.execute(text("SELECT 1"))
+        db_session.commit()
+    except Exception as err:
+        print(f"Connection error: {err}")
+
+
+wait_for_db(check_db)
+
 engines = {
-    "reader": create_async_engine(settings.database_url, pool_recycle=3600),
-    "writer": create_async_engine(settings.database_url, pool_recycle=3600),
+    "reader": create_async_engine(
+        settings.database_url, pool_recycle=3600, pool_pre_ping=True
+    ),
+    "writer": create_async_engine(
+        settings.database_url, pool_recycle=3600, pool_pre_ping=True
+    ),
 }
 
 

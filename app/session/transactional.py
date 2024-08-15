@@ -1,9 +1,8 @@
 import functools
+import logging
 
 from contextvars import ContextVar
-import logging
 from typing import Any, Awaitable, Callable, Optional
-import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .manager import session

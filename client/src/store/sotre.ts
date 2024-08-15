@@ -1,13 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { openerSlice } from "./opener/opener";
 import { loginSlice } from "./login/login";
-import { registerSlice } from "./login/register";
+import { registerNeedSlice } from "./login/regiterNeed";
+import { registerUserSlice } from "./login/registerUser";
 
 const store = configureStore({
   reducer: {
     open: openerSlice.reducer,
     login: loginSlice.reducer,
-    register: registerSlice.reducer,
+    registerNeed: registerNeedSlice.reducer,
+    registerUser: registerUserSlice.reducer
   },
 });
 

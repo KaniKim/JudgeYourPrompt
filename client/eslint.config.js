@@ -5,11 +5,18 @@ import pluginReact from "eslint-plugin-react";
 import { FlatCompat } from "@eslint/eslintrc";
 import path from "path";
 import url from "url";
-import js from "@eslint/js";
 
 export default [
-  js.configs.recommended,
+  pluginJs.configs.recommended,
   {
+    parserOptions: {
+      ecmaVersion: "latest",
+      ecmaFeatures: {
+        jsx: true,
+      },
+      sourceType: "module",
+      project: "./tsconfig.eslint.json",
+    },
     rules: {
       "no-console": "warn",
       "linebreak-style": 0,
@@ -37,6 +44,20 @@ export default [
       "react-hooks/exhaustive-deps": 0,
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off",
+      "prettier/prettier": [
+        "error",
+        {
+          printWidth: 80,
+          trailingComma: "all",
+          singleQuote: false,
+          tabWidth: 2,
+          semi: true,
+          jsxSingleQuote: false,
+          quoteProps: "as-needed",
+          bracketSpacing: true,
+          jsxBracketSameLine: false,
+        },
+      ],
     },
   },
   ...new FlatCompat({
@@ -44,7 +65,6 @@ export default [
   }).extends("prettier", "plugin:prettier/recommended"),
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
 ];

@@ -1,7 +1,7 @@
 import os
 from pydantic_settings import BaseSettings
 
-__all__ = ["settings"]
+__all__ = ["settings", "check_db"]
 
 
 class Settings(BaseSettings):
@@ -25,3 +25,5 @@ port = os.environ.get("DB_PORT")
 settings = Settings(
     database_url=f"postgresql+asyncpg://{username}:{password}@{host}:{port}/{database}"
 )
+
+check_db = f"postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}"

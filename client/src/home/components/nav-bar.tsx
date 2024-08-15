@@ -1,7 +1,8 @@
 import { useDispatch } from "react-redux";
 import { Field, Label, Switch } from "@headlessui/react";
 import { useState } from "react";
-import { openerActions, updateOpenerActions } from "../../store/opener/opener";
+import { openerActions } from "../../store/opener/opener";
+import { MyProfile } from "./profile/my-profile";
 
 export const NavBar = () => {
   const dispatch = useDispatch();
@@ -35,49 +36,23 @@ export const NavBar = () => {
               />
             </svg>
           </button>
-          <div className="justify-end flex" id="navbar-sticky">
-            <ul className="justify-end font-medium rounded-lg flex">
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 text-white rounded md:bg-transparent "
-                  aria-current="page"
-                >
-                  Home
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent "
-                >
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block py-2 px-3 text-white rounded ">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a href="#" className="block py-2 px-3 text-white ">
-                  Contact
-                </a>
-              </li>
-            </ul>
+        </div>
+        <div className="flex ">
+          <Field>
+            <Label className="text-m pr-3">자동 저장</Label>
+            <Switch
+              checked={enabled}
+              onChange={setEnabled}
+              name="자동 저장"
+              className="group inline-flex h-6 w-11 mt-2 items-center rounded-full bg-gray-200 transition data-[checked]:bg-gray-600"
+            >
+              <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
+            </Switch>
+          </Field>
+          <div className="ml-3 mt-1">
+            <MyProfile/>
           </div>
         </div>
-        <Field>
-          <Label className="text-m pr-3">자동 저장</Label>
-          <Switch
-            checked={enabled}
-            onChange={setEnabled}
-            name="자동 저장"
-            className="group inline-flex h-6 w-11 mt-2 items-center rounded-full bg-gray-200 transition data-[checked]:bg-gray-600"
-          >
-            <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
-          </Switch>
-        </Field>
       </div>
     </nav>
   );
