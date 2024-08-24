@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+from starlette import status
 from passlib.context import CryptContext
 
 from model.user import User as UserModel
@@ -33,4 +35,10 @@ class UserService(BaseService[UserModel]):
     @transactional
     async def create_user(self, user: UserCreate) -> None:
         user.password = self._pwd_context.hash(user.password)
-        return await self._user_repo.create_user(user)
+        if not await self._user_repo.get_user_by_email(email=user.email):
+            return await self._user_repo.create_user(user)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Already existed user",
+            headers={"X-Error": "Error"},
+        )

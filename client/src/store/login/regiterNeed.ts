@@ -6,10 +6,10 @@ export const registerNeedSlice = createSlice({
     value: false,
   },
   reducers: {
-    need: state => {
+    need: (state) => {
       state.value = true;
     },
-    notNeed: state => {
+    notNeed: (state) => {
       state.value = false;
     },
   },

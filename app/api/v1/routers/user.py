@@ -1,4 +1,4 @@
-from typing import Annotated, Union
+from typing import Union
 
 from fastapi import APIRouter, Depends, Header
 from starlette import status

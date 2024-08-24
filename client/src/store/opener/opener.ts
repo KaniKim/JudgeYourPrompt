@@ -6,10 +6,10 @@ export const openerSlice = createSlice({
     value: false,
   },
   reducers: {
-    open: state => {
+    open: (state) => {
       state.value = true;
     },
-    close: state => {
+    close: (state) => {
       state.value = false;
     },
   },

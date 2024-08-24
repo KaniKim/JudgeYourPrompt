@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home } from "./home/entire-home";
+import { EditingHome } from "./home/edit-home";
 import { Provider } from "react-redux";
 import store from "./store/sotre";
 import { UserHome } from "./user/user-home";
@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<UserHome />} />
-          <Route path="/editor" element={<Home />} />
+          <Route path="/editor" element={<EditingHome />} />
         </Routes>
       </BrowserRouter>
     </Provider>

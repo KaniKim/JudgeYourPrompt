@@ -4,7 +4,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/sotre";
 
 export const UserHome = () => {
-  const needRegister = useSelector((state: RootState) => state.registerNeed.value);
+  const needRegister = useSelector(
+    (state: RootState) => state.registerNeed.value,
+  );
 
   return (
     <section className="mx-5 my-2 flex h-screen flex-col items-center justify-center space-y-10 md:m-0 md:flex-row md:space-x-16 md:space-y-0">

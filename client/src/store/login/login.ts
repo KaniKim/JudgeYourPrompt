@@ -7,6 +7,11 @@ const initialState = {
   error: null,
 };
 
+type loginResponse = {
+  access_token: string;
+  refresh_token: string;
+};
+
 const cookies = new Cookies();
 
 export const login = createAsyncThunk(
@@ -18,17 +23,18 @@ export const login = createAsyncThunk(
       },
     };
     await axios
-      .post("http://localhost:8000/api/v1/user/token", data, config)
-      .then(res => {
+      .post<loginResponse>(
+        "http://localhost:8000/api/v1/user/token",
+        data,
+        config,
+      )
+      .then((res) => {
         cookies.set("accessToken", res.data.access_token);
         cookies.set("refreshToken", res.data.refresh_token);
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
-
-    
-
   },
 );
 
@@ -36,14 +42,14 @@ export const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {},
-  extraReducers: builder => {
-    builder.addCase(login.pending, state => {
+  extraReducers: (builder) => {
+    builder.addCase(login.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(login.fulfilled, state => {
+    builder.addCase(login.fulfilled, (state) => {
       state.loading = false;
     });
-    builder.addCase(login.rejected, state => {
+    builder.addCase(login.rejected, (state) => {
       state.loading = false;
     });
   },

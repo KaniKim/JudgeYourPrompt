@@ -1,70 +1,51 @@
 import globals from "globals";
-import pluginJs from "@eslint/js";
+import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
+import prettierPluginRecommended from "eslint-plugin-prettier/recommended";
+import reactPlugin from "eslint-plugin-react";
+import tailwindPlugin from "eslint-plugin-tailwindcss";
 import { FlatCompat } from "@eslint/eslintrc";
-import path from "path";
-import url from "url";
+import reactRefresh from "eslint-plugin-react-refresh";
 
-export default [
-  pluginJs.configs.recommended,
+const compat = new FlatCompat();
+
+export default tseslint.config(
+  eslint.configs.recommended,
+  ...compat.extends("eslint-config-standard"),
+  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
+  ...tailwindPlugin.configs["flat/recommended"],
+  prettierPluginRecommended,
   {
-    parserOptions: {
-      ecmaVersion: "latest",
-      ecmaFeatures: {
-        jsx: true,
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+        tsconfigRootDir: import.meta.dirname,
+        project: ["tsconfig.node.json", "tsconfig.app.json"],
       },
-      sourceType: "module",
-      project: "./tsconfig.eslint.json",
-    },
-    rules: {
-      "no-console": "warn",
-      "linebreak-style": 0,
-      "import/no-dynamic-require": 0,
-      "import/no-unresolved": 0,
-      "import/prefer-default-export": 0,
-      "global-require": 0,
-      "import/no-extraneous-dependencies": 0,
-      "jsx-quotes": ["error", "prefer-single"],
-      "react/jsx-props-no-spreading": 0,
-      "react/forbid-prop-types": 0,
-      "react/jsx-filename-extension": [
-        2,
-        { extensions: [".js", ".jsx", ".ts", ".tsx"] },
-      ],
-      "import/extensions": 0,
-      "no-use-before-define": 0,
-      "@typescript-eslint/no-empty-interface": 0,
-      "@typescript-eslint/no-explicit-any": 0,
-      "@typescript-eslint/no-var-requires": 0,
-      "no-shadow": "off",
-      "react/prop-types": 0,
-      "no-empty-pattern": 0,
-      "no-alert": 0,
-      "react-hooks/exhaustive-deps": 0,
-      "react/jsx-uses-react": "off",
-      "react/react-in-jsx-scope": "off",
-      "prettier/prettier": [
-        "error",
-        {
-          printWidth: 80,
-          trailingComma: "all",
-          singleQuote: false,
-          tabWidth: 2,
-          semi: true,
-          jsxSingleQuote: false,
-          quoteProps: "as-needed",
-          bracketSpacing: true,
-          jsxBracketSameLine: false,
-        },
-      ],
+      globals: { ...globals.browser },
     },
   },
-  ...new FlatCompat({
-    baseDirectory: path.dirname(url.fileURLToPath(import.meta.url)),
-  }).extends("prettier", "plugin:prettier/recommended"),
-  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
-  { languageOptions: { globals: globals.browser } },
-  ...tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-];
+  {
+    files: ["**/*.{js,mjs,cjs,jsx}"],
+    extends: [tseslint.configs.disableTypeChecked],
+  },
+  {
+    plugins: {
+      react: reactPlugin,
+      "react-refresh": reactRefresh,
+    },
+    settings: { react: { version: "detect" } },
+    rules: {
+      ...reactPlugin.configs["recommended"].rules,
+      ...reactPlugin.configs["jsx-runtime"].rules,
+      "prettier/prettier": "warn",
+      "react-refresh/only-export-components": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      camelcase: "off",
+      "@typescript-eslint/consistent-type-definitions": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+    },
+  },
+);

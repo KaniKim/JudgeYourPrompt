@@ -1,7 +1,7 @@
 import { Drawer, QuillEditor } from "./components";
 import { NavBar } from "./components/nav-bar";
 
-export const Home = () => {
+export const EditingHome = () => {
   return (
     <>
       <NavBar />

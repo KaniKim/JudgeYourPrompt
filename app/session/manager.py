@@ -1,5 +1,3 @@
-import asyncio
-import sys
 from contextvars import ContextVar, Token
 from typing import AsyncGenerator
 
@@ -40,9 +38,7 @@ def wait_for_db(db_uri):
     )
 
     try:
-        # Try to create session to check if DB is awake
         db_session = _LocalSessionLocal()
-        # try some basic query
         db_session.execute(text("SELECT 1"))
         db_session.commit()
     except Exception as err:

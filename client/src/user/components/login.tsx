@@ -5,21 +5,32 @@ import { AppDispatch } from "../../store/sotre";
 import { Button } from "@headlessui/react";
 import { registerNeedActions } from "../../store/login/regiterNeed";
 import { useNavigate } from "react-router-dom";
+
+type loginData = {
+  email: string;
+  password: string;
+};
+
 export const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { register, getValues, handleSubmit } = useForm();
+  const { register, getValues, handleSubmit } = useForm<loginData>();
   const navigate = useNavigate();
-  
+
   const onSubmit = async () => {
     const email: string = getValues("email");
     const password: string = getValues("password");
-    await dispatch(login({ email, password })).unwrap().then(() => {
-      navigate("/editor");
-    });
+    await dispatch(login({ email, password }))
+      .unwrap()
+      .then(() => {
+        navigate("/editor");
+      })
+      .catch((err) => {
+        throw err;
+      });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="max-w">
+      <div className="max-w-xl">
         <input
           {...register("email", { required: true })}
           className="w-full rounded border border-solid border-gray-300 px-4 py-2 text-sm"
